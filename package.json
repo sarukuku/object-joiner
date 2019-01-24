@@ -1,0 +1,24 @@
+{
+  "name": "object-joiner",
+  "version": "1.0.0",
+  "description": "A tiny utility that merges JavaScript objects and bundles clashing property values to an array.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarukuku/object-joiner.git"
+  },
+  "keywords": [
+    "javascript",
+    "object",
+    "merge"
+  ],
+  "author": "Joonas Salovaara",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sarukuku/object-joiner/issues"
+  },
+  "homepage": "https://github.com/sarukuku/object-joiner#readme"
+}
