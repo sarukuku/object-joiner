@@ -66,7 +66,7 @@ const recurseOverObjectValues = (object, callback, callbackArgs = []) => {
  * clashing paths are bundeled to arrays in order of appearance.
  * @param {array} objectArray - An array of objects to be merged.
  */
-export default mergeObjects = (objectArray = []) => {
+module.exports = (objectArray = []) => {
   const result = {};
   objectArray.forEach(object => {
     recurseOverObjectValues(object, addPropertyToObject, [result]);
