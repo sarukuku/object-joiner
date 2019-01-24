@@ -62,11 +62,11 @@ const recurseOverObjectValues = (object, callback, callbackArgs = []) => {
 };
 
 /**
- * Merges an array of objects to a single object. Values for
+ * Merges passed objects to a single object. Values for
  * clashing paths are bundeled to arrays in order of appearance.
- * @param {array} objectArray - An array of objects to be merged.
+ * @param {object} objectArray - All objects to be merged as arguments.
  */
-module.exports = (objectArray = []) => {
+module.exports = (...objectArray) => {
   const result = {};
   objectArray.forEach(object => {
     recurseOverObjectValues(object, addPropertyToObject, [result]);

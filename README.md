@@ -1,6 +1,6 @@
 # object-joiner
 
-A tiny utility that merges JavaScript objects and bundles clashing property values to an array instead of overwriting them.
+A tiny utility that merges JavaScript objects and bundles clashing property values to an array instead of overwriting them. Variable number of objects can be passed as arguments. 
 
 ## Install
 
@@ -29,7 +29,7 @@ const y = {
   c: "c"
 }
 
-const result = joinObjects([x, y])
+const result = joinObjects(x, y)
 
 /*
 > console.log(result)

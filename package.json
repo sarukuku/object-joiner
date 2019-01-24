@@ -1,6 +1,6 @@
 {
   "name": "object-joiner",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A tiny utility that merges JavaScript objects and bundles clashing property values to an array.",
   "main": "index.js",
   "scripts": {
