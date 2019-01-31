@@ -1,3 +1,5 @@
+![](https://img.shields.io/npm/v/object-joiner.svg?style=flat) ![](https://img.shields.io/npm/dt/object-joiner.svg?style=flat)
+
 # object-joiner
 
 A tiny utility that merges JavaScript objects and bundles clashing property values to an array instead of overwriting them. Variable number of objects can be passed as arguments. 
