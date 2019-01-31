@@ -1,3 +1,5 @@
+var get = require("lodash.get");
+
 /**
  * Check if a passed variable is an object.
  * @param {*} x - Anything you want to check.
@@ -5,71 +7,72 @@
 const isObject = x => typeof x === "object" && x !== null;
 
 /**
- * Writes a given value to a given object to a given path in that object.
- * The path is an array of strings that represent the object keys. Deepest
- * key last. If the path exists and has a value set then the value is turned
- * into an array and the new values pushed to that array.
- * @param {array} path - An array of strings that describe the property path.
- * @param {*} value - Set to the value of the path in the passed object.
- * @param {object} object - The target object where to write the value.
+ * Check if variable is undefined.
+ * @param {*} x - Anything you want to check.
  */
-function addPropertyToObject(path, value, object) {
-  const lastName = arguments.length === 3 ? path.pop() : false;
-
-  for (let i = 0; i < path.length; i++) {
-    object = object[path[i]] = object[path[i]] || {};
-  }
-
-  if (lastName) {
-    if (typeof object[lastName] === "undefined") {
-      object = object[lastName] = value;
-    } else {
-      if (Array.isArray(object[lastName])) {
-        object = object[lastName].push(value);
-      } else {
-        object = object[lastName] = [object[lastName], value];
-      }
-    }
-  }
-
-  return object;
-}
+const isUndefined = x => typeof x === "undefined";
 
 /**
- * Recurses over object values and calls a passed callback function
- * for each leaf node in the object with current pat, value and
- * additional arguments.
- * @param {object} object - The object to be recursed over.
- * @param {function} callback - A function that's called for each leaf node with path array, node value and callbackArgs.
- * @param {array} callbackArgs - An array of additional arguments passed to the callback.
+ * Merges two objects to a single object. Values for clashing
+ * paths are bundeled to arrays in order of appearance.
+ * @param {object} a - A base object.
+ * @param {object} b - An object to merge with the base object.
  */
-const recurseOverObjectValues = (object, callback, callbackArgs = []) => {
+const joinObjects = (a, b) => {
   const path = [];
 
-  const recurse = o => {
-    for (let key in o) {
+  const recursivelyJoinObjects = (a, b) => {
+    const base = JSON.parse(JSON.stringify(a));
+    const toMerge = JSON.parse(JSON.stringify(b));
+    const localPath = [];
+
+    for (let key in toMerge) {
       path.push(key);
-      if (isObject(o[key])) {
-        recurse(o[key]);
+      localPath.push(key);
+
+      const currentValue = get(base, localPath);
+      const newValue = toMerge[key];
+
+      if (isUndefined(currentValue)) {
+        base[key] = newValue;
       } else {
-        callback([...path], o[key], ...callbackArgs);
+        if (isObject(currentValue) && isObject(newValue)) {
+          base[key] = recursivelyJoinObjects(currentValue, newValue);
+        } else {
+          if (isUndefined(currentValue) && isUndefined(newValue)) {
+            base[key] = undefined;
+          } else if (isUndefined(currentValue && !isUndefined(newValue))) {
+            base[key] = newValue;
+          } else if (!isUndefined(currentValue) && isUndefined(newValue)) {
+            base[key] = currentValue;
+          } else {
+            base[key] = [currentValue, newValue];
+          }
+        }
       }
+
+      localPath.pop();
       path.pop();
     }
-  };
 
-  recurse(object);
+    return base;
+  };
 };
 
 /**
- * Merges passed objects to a single object. Values for
+ * Merges all passed objects to a single object. Values for
  * clashing paths are bundeled to arrays in order of appearance.
  * @param {object} objectArray - All objects to be merged as arguments.
  */
 module.exports = (...objectArray) => {
-  const result = {};
+  if (objectArray.length === 0)
+    throw new Error(
+      "You'll need to provide at least two object to merge them."
+    );
+  if (objectArray.length === 1) return objectArray[0];
+  const result = objectArray.shift();
   objectArray.forEach(object => {
-    recurseOverObjectValues(object, addPropertyToObject, [result]);
+    joinObjects(result, object);
   });
   return result;
 };
