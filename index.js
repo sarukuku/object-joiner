@@ -13,6 +13,12 @@ const isObject = x => typeof x === "object" && x !== null;
 const isUndefined = x => typeof x === "undefined";
 
 /**
+ * Just a shorthand for the native isArray method.
+ * @param {*} x - Anything you want to check.
+ */
+const isArray = x => Array.isArray(x)
+
+/**
  * Merges two objects to a single object. Values for clashing
  * paths are bundeled to arrays in order of appearance.
  * @param {object} a - A base object.
@@ -33,17 +39,25 @@ const joinObjects = (a, b) => {
       const currentValue = get(base, localPath);
       const newValue = toMerge[key];
 
-      if (isUndefined(currentValue)) {
+      if (isUndefined(currentValue) && isUndefined(newValue)) {
+        base[key] = undefined;
+      } else if (!isUndefined(currentValue) && isUndefined(newValue)) {
+        base[key] = currentValue;
+      } else if (isUndefined(currentValue) && !isUndefined(newValue)) {
         base[key] = newValue;
-      } else {
+      } else if (!isUndefined(currentValue) && !isUndefined(newValue)) {
         if (isObject(currentValue) && isObject(newValue)) {
-          base[key] = recursivelyJoinObjects(currentValue, newValue);
+          if (isArray(currentValue) && isArray(newValue)) {
+            base[key] = currentValue.concat(newValue)
+          } else if (isArray(currentValue)) {
+            currentValue.push(newValue);
+            base[key] = currentValue;
+          } else {
+            base[key] = recursivelyJoinObjects(currentValue, newValue);
+          }
         } else {
-          if (isUndefined(currentValue) && isUndefined(newValue)) {
-            base[key] = undefined;
-          } else if (isUndefined(currentValue && !isUndefined(newValue))) {
-            base[key] = newValue;
-          } else if (!isUndefined(currentValue) && isUndefined(newValue)) {
+          if (isArray(currentValue)) {
+            currentValue.push(newValue);
             base[key] = currentValue;
           } else {
             base[key] = [currentValue, newValue];
@@ -57,6 +71,8 @@ const joinObjects = (a, b) => {
 
     return base;
   };
+
+  return recursivelyJoinObjects(a, b);
 };
 
 /**
@@ -69,10 +85,10 @@ module.exports = (...objectArray) => {
     throw new Error(
       "You'll need to provide at least two object to merge them."
     );
-  if (objectArray.length === 1) return objectArray[0];
-  const result = objectArray.shift();
+  else if (objectArray.length === 1) return objectArray[0];
+  let result = objectArray.shift();
   objectArray.forEach(object => {
-    joinObjects(result, object);
+    result = joinObjects(result, object);
   });
   return result;
 };

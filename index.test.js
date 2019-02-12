@@ -90,23 +90,42 @@ test("handles objects on value conflict", () => {
   });
 });
 
-test("returns the object back if only one object passed in", () => {
-  expect(joinObjects({ a: { b: "b", c: "b" } })).toEqual({
-    a: { b: "b", c: "b" }
-  });
-});
-
-test("throws an error less than one object passed", () => {
-  expect(joinObjects()).toThrow();
-});
-
 test("handles more than two objects correctly", () => {
   expect(
     joinObjects(
       { a: { b: "a", c: "a" } },
       { a: { b: "b", c: "b" } },
       { a: { b: "c", c: "c" } }
-    )).toEqual(
-      { a: { b: ["a", "b", "c"], c: ["a", "b", "c"] } }
-    );
+    )
+  ).toEqual({ a: { b: ["a", "b", "c"], c: ["a", "b", "c"] } });
+});
+
+test("handles existing arrays correctly", () => {
+  expect(
+    joinObjects(
+      { a: { b: ["a", "b"], c: ["a"] } },
+      { a: { b: "c", c: "b" } }
+    )
+  ).toEqual({ a: { b: ["a", "b", "c"], c: ["a", "b"] } });
+});
+
+test("handles merging arrays on both objects correctly", () => {
+  expect(
+    joinObjects(
+      { a: { b: ["a", "b"], c: ["a"] } },
+      { a: { b: ["c"], c: ["b", "c"] } }
+    )
+  ).toEqual({ a: { b: ["a", "b", "c"], c: ["a", "b", "c"] } });
+});
+
+test("returns the object back if only one object passed in", () => {
+  expect(joinObjects({ a: { b: "b", c: "b" } })).toEqual({
+    a: { b: "b", c: "b" }
+  });
+});
+
+test("throws an error if less than one object passed", () => {
+  expect(() => {
+    joinObjects();
+  }).toThrowError();
 });
