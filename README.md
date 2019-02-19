@@ -6,7 +6,7 @@ A tiny utility that merges JavaScript objects by bundling clashing property valu
 
 **Other details**
 - Clashing arrays are merged and order of array items preserved
-- In objects when a cyclic reference is found is's replaced with a string containing `[Cyclic]`
+- In objects when a cyclic reference is found it's replaced with a string containing `[Cyclic]`
 
 ## Install
 
