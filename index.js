@@ -16,7 +16,25 @@ const isUndefined = x => typeof x === "undefined";
  * Just a shorthand for the native isArray method.
  * @param {*} x - Anything you want to check.
  */
-const isArray = x => Array.isArray(x)
+const isArray = x => Array.isArray(x);
+
+/**
+ * A function generator that returs a function that
+ * keep list of seen objects and returns a special
+ * string when it encouters an already seen object.
+ */
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (isObject(value)) {
+      if (seen.has(value)) {
+        return "[Cyclic]";
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
 
 /**
  * Merges two objects to a single object. Values for clashing
@@ -28,8 +46,8 @@ const joinObjects = (a, b) => {
   const path = [];
 
   const recursivelyJoinObjects = (a, b) => {
-    const base = JSON.parse(JSON.stringify(a));
-    const toMerge = JSON.parse(JSON.stringify(b));
+    const base = JSON.parse(JSON.stringify(a, getCircularReplacer()));
+    const toMerge = JSON.parse(JSON.stringify(b, getCircularReplacer()));
     const localPath = [];
 
     for (let key in toMerge) {
@@ -48,7 +66,7 @@ const joinObjects = (a, b) => {
       } else if (!isUndefined(currentValue) && !isUndefined(newValue)) {
         if (isObject(currentValue) && isObject(newValue)) {
           if (isArray(currentValue) && isArray(newValue)) {
-            base[key] = currentValue.concat(newValue)
+            base[key] = currentValue.concat(newValue);
           } else if (isArray(currentValue)) {
             currentValue.push(newValue);
             base[key] = currentValue;

@@ -2,7 +2,11 @@
 
 # object-joiner
 
-A tiny utility that merges JavaScript objects and bundles clashing property values to an array instead of overwriting them. Variable number of objects can be passed as arguments. 
+A tiny utility that merges JavaScript objects by bundling clashing property values to arrays instead of overwriting them. Variable number of objects can be passed as arguments.
+
+**Other details**
+- Clashing arrays are merged and order of array items preserved
+- In objects when a cyclic reference is found is's replaced with a string containing `[Cyclic]`
 
 ## Install
 
@@ -44,3 +48,4 @@ const result = joinObjects(x, y)
   }
 * /
 ```
+(see the `index.test.js` file for more examples)
