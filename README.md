@@ -1,4 +1,4 @@
-![](https://img.shields.io/npm/v/object-joiner.svg?style=flat) ![](https://img.shields.io/npm/dt/object-joiner.svg?style=flat)
+[![](https://img.shields.io/npm/v/object-joiner.svg?style=flat)](https://www.npmjs.com/package/object-joiner) [![](https://img.shields.io/npm/dt/object-joiner.svg?style=flat)](https://www.npmjs.com/package/object-joiner)
 
 # object-joiner
 
