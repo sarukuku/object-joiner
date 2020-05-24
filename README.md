@@ -48,4 +48,4 @@ const result = joinObjects(x, y)
   }
 * /
 ```
-(see the `index.test.js` file for more examples)
+(see the [`index.test.js`](https://github.com/sarukuku/object-joiner/blob/master/index.test.js) file for more examples)
